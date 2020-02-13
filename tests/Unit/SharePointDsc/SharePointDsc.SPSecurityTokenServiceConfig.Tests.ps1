@@ -73,11 +73,12 @@ try
                 }
                 Mock -CommandName Get-SPSecurityTokenServiceConfig -MockWith {
                     return @{
-                        Name                  = "Security Token Service"
-                        NameIdentifier        = "12345-12345-12345-12345@12345-12345"
-                        UseSessionCookies     = $false
-                        AllowOAuthOverHttp    = $false
-                        AllowMetadataOverHttp = $false
+                        Name                   = "Security Token Service"
+                        NameIdentifier         = "12345-12345-12345-12345@12345-12345"
+                        UseSessionCookies      = $false
+                        AllowOAuthOverHttp     = $false
+                        AllowMetadataOverHttp  = $false
+                        WindowsModeIgnoreCache = $false
                     } | Add-Member ScriptMethod Update {
                         $Global:UpdatedCalled = $true
                     } -PassThru
