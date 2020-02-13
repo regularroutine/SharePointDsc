@@ -35,6 +35,10 @@ function Get-TargetResource
         $AllowMetadataOverHttp = $false,
 
         [Parameter()]
+        [System.Boolean]
+        $WindowsModeIgnoreCache = $false,
+
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $InstallAccount,
 
@@ -46,21 +50,22 @@ function Get-TargetResource
 
     Write-Verbose -Message "Getting Security Token Service Configuration"
 
-    $result = Invoke-SPDscCommand -Credential $InstallAccount `
+    $result = Invoke-SPDSCCommand -Credential $InstallAccount `
         -Arguments $PSBoundParameters `
         -ScriptBlock {
         $params = $args[0]
 
         $config = Get-SPSecurityTokenServiceConfig
         $nullReturn = @{
-            IsSingleInstance      = "Yes"
-            Name                  = $params.Name
-            NameIdentifier        = $params.NameIdentifier
-            UseSessionCookies     = $params.UseSessionCookies
-            AllowOAuthOverHttp    = $params.AllowOAuthOverHttp
-            AllowMetadataOverHttp = $params.AllowMetadataOverHttp
-            Ensure                = "Absent"
-            InstallAccount        = $params.InstallAccount
+            IsSingleInstance       = "Yes"
+            Name                   = $params.Name
+            NameIdentifier         = $params.NameIdentifier
+            UseSessionCookies      = $params.UseSessionCookies
+            AllowOAuthOverHttp     = $params.AllowOAuthOverHttp
+            AllowMetadataOverHttp  = $params.AllowMetadataOverHttp
+            WindowsModeIgnoreCache = $params.WindowsModeIgnoreCache
+            Ensure                 = "Absent"
+            InstallAccount         = $params.InstallAccount
         }
         if ($null -eq $config)
         {
@@ -68,14 +73,15 @@ function Get-TargetResource
         }
 
         return @{
-            IsSingleInstance      = "Yes"
-            Name                  = $config.Name
-            NameIdentifier        = $config.NameIdentifier
-            UseSessionCookies     = $config.UseSessionCookies
-            AllowOAuthOverHttp    = $config.AllowOAuthOverHttp
-            AllowMetadataOverHttp = $config.AllowMetadataOverHttp
-            Ensure                = "Present"
-            InstallAccount        = $params.InstallAccount
+            IsSingleInstance       = "Yes"
+            Name                   = $config.Name
+            NameIdentifier         = $config.NameIdentifier
+            UseSessionCookies      = $config.UseSessionCookies
+            AllowOAuthOverHttp     = $config.AllowOAuthOverHttp
+            AllowMetadataOverHttp  = $config.AllowMetadataOverHttp
+            WindowsModeIgnoreCache = $params.WindowsModeIgnoreCache
+            Ensure                 = "Present"
+            InstallAccount         = $params.InstallAccount
         }
     }
     return $result
@@ -112,6 +118,10 @@ function Set-TargetResource
         $AllowMetadataOverHttp = $false,
 
         [Parameter()]
+        [System.Boolean]
+        $WindowsModeIgnoreCache = $false,
+
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $InstallAccount,
 
@@ -129,7 +139,7 @@ function Set-TargetResource
         Please set Ensure to Present or omit the resource"
     }
 
-    Invoke-SPDscCommand -Credential $InstallAccount `
+    Invoke-SPDSCCommand -Credential $InstallAccount `
         -Arguments $PSBoundParameters `
         -ScriptBlock {
         $params = $args[0]
@@ -154,6 +164,11 @@ function Set-TargetResource
         if ($params.ContainsKey("AllowMetadataOverHttp"))
         {
             $config.AllowMetadataOverHttp = $params.AllowMetadataOverHttp
+        }
+
+        if ($params.ContainsKey("WindowsModeIgnoreCache"))
+        {
+            $config.WindowsModeIgnoreCache = $params.WindowsModeIgnoreCache
         }
 
         $config.Update()
@@ -192,6 +207,10 @@ function Test-TargetResource
         $AllowMetadataOverHttp = $false,
 
         [Parameter()]
+        [System.Boolean]
+        $WindowsModeIgnoreCache = $false,
+
+        [Parameter()]
         [System.Management.Automation.PSCredential]
         $InstallAccount,
 
@@ -216,7 +235,8 @@ function Test-TargetResource
         "NameIdentifier",
         "UseSessionCookies",
         "AllowOAuthOverHttp",
-        "AllowMetadataOverHttp")
+        "AllowMetadataOverHttp",
+        "WindowsModeIgnoreCache")
 }
 
 Export-ModuleMember -Function *-TargetResource
