@@ -79,7 +79,7 @@ function Get-TargetResource
             UseSessionCookies      = $config.UseSessionCookies
             AllowOAuthOverHttp     = $config.AllowOAuthOverHttp
             AllowMetadataOverHttp  = $config.AllowMetadataOverHttp
-            WindowsModeIgnoreCache = $params.WindowsModeIgnoreCache
+            WindowsModeIgnoreCache = $config.WindowsModeIgnoreCache
             Ensure                 = "Present"
             InstallAccount         = $params.InstallAccount
         }
